@@ -1,0 +1,40 @@
+Test loss: 2.2389e-08
+
+------- Detailed losses of each target -------
+Losses are sorted in descending order
+
+======= No.000: Target 002 =======
+Validation loss:            1.647088172697932e-07
+Angular quantum numbers:    (0, 0)
+Target blocks:              {'52 42': [2, 2]}
+Position in H matrix:       {'52 42': [2, 3, 2, 3]}
+
+======= No.001: Target 001 =======
+Validation loss:            7.981358740238065e-08
+Angular quantum numbers:    (0, 0)
+Target blocks:              {'52 42': [1, 1]}
+Position in H matrix:       {'52 42': [1, 2, 1, 2]}
+
+======= No.002: Target 004 =======
+Validation loss:            7.272163912595248e-08
+Angular quantum numbers:    (1, 1)
+Target blocks:              {'52 42': [4, 4]}
+Position in H matrix:       {'52 42': [6, 9, 6, 9]}
+
+======= No.003: Target 000 =======
+Validation loss:            7.804864919424185e-09
+Angular quantum numbers:    (0, 0)
+Target blocks:              {'52 42': [0, 0]}
+Position in H matrix:       {'52 42': [0, 1, 0, 1]}
+
+======= No.004: Target 003 =======
+Validation loss:            6.9128544362826335e-09
+Angular quantum numbers:    (1, 1)
+Target blocks:              {'52 42': [3, 3]}
+Position in H matrix:       {'52 42': [3, 6, 3, 6]}
+
+======= No.005: Target 005 =======
+Validation loss:            2.4344881445680697e-09
+Angular quantum numbers:    (2, 2)
+Target blocks:              {'52 42': [5, 5]}
+Position in H matrix:       {'52 42': [9, 14, 9, 14]}
