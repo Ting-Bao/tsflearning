@@ -79,7 +79,7 @@ Since pytorch may support different versions of CUDA and GPU drivers, you can go
 
 When inference the Hamiltonians using provided well-trained models here, a overlap matrix is required to compute in advance and the tutorial can be found at [mzjb/overlap-only-OpenMX](https://github.com/mzjb/overlap-only-OpenMX).
 
-Additionally, to diagonalize NN inferenced Hamiltonians, you can use code at `code/transfer-deephe3/inference_tools/sparse_calc_pardis.jl`, then you also need **Julia** with packages `DelimitedFiles, LinearAlgebra, JSON, HDF5, ArgParse, SparseArrays, Pardiso, Arpack, LinearMaps, JLD`.
+Additionally, to diagonalize NN inferenced Hamiltonians, you can use code at `Code/transfer-deephe3/inference_tools/sparse_calc_pardis.jl`, then you also need **Julia** with packages `DelimitedFiles, LinearAlgebra, JSON, HDF5, ArgParse, SparseArrays, Pardiso, Arpack, LinearMaps, JLD`.
 
 
 
@@ -91,16 +91,22 @@ Mentionly, application in our paper requires relative heay computing power, so t
 
 First 2 steps are computationally costy and **you can directly use our trained models** and go to NN inference part.
 
+> [!NOTE]
+>
+> Following part is waiting the uploading process of the dataset and will be available **before Feb.12, 2025**
+
 - (optional) Dataset preparation
 
   - For non-twisted dataset:
 
     ```
-    cd demo/1.dataset_generation
+    cd Demo/1.dataset_generation/twist
 
   - For twisted dataset, use relaxed POSCAR at several twist angles and apply pertubations:
 
 - (optional) Neural network training
+
+  - The training config file is `` for the first step
 
 - NN inference
 - postprocess
@@ -108,7 +114,7 @@ First 2 steps are computationally costy and **you can directly use our trained m
 
 # Instruction of Use
 
-Refer to Demo part. If you are interested in $tMoTe_2$ specifically, we strongly sugguest you to use our well-trained models at `trained_models` folder.
+Refer to Demo part. If you are interested in $tMoTe_2$ specifically, we strongly sugguest you to use our well-trained models at `trained_models` folder. And for other twisted materials, this methodology should also work well.
 
 
 
