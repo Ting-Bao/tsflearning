@@ -113,7 +113,12 @@ Mentionly, application in our paper requires relative heay computing power, so t
     └── shift.json
     ```
 
-    where the openmx_in.dat is the required input file to do OpenMX calculation.
+    where the `openmx_in.dat` is the required input file to do OpenMX calculation. You can then run OpenMX as follows, change the mpi configuration according to your environment. Remember to `cat openmx.out >> openmx.scfout` for convenience of extracting Hamiltonians.
+
+    ```
+    mpirun -np {Number of cores} {Path to your compiled OpenMX} openmx_in.dat  > openmx.std
+    cat openmx.out >> openmx.scfout
+    ```
 
     You can also see a distribution of interlayer space figure like :
 
@@ -134,13 +139,40 @@ Mentionly, application in our paper requires relative heay computing power, so t
 
 - (optional) Neural network training
 
-  - go `Demo/2.NN_training`
+  - go `Demo/2.NN_training`, after get the nontwist and twist dataset, you can put your dataset or download the provided demo dataset and put them in `Demo/2.NN_training/datasets`
+
+    ```
+    provided nontwisted dataset: https://cloud.tsinghua.edu.cn/d/18747f41cfbb45acb592/
+    provided twisted dataset: 		https://cloud.tsinghua.edu.cn/d/86725fd644394235a93e/
+    ```
+
+    Then you can use the train the model by:
+
+    ```
+    cd Demo/2.NN_training
+    python ../../Code/tsflearn-deephe3/deephe3-train.py --train1.ini
+    ```
+
+    where `train1.ini` is the config file, you can modify `train1.ini` to decide use CUDA device or CPU to improve the efficiency. The final result will be at `Demo/2.NN_training/train1_result`.
+
+    after getting the model trained by nontwisted data, we use the twisted dataset to do the transfer learning. You should first modify the `train2.ini`
+
+    then run following command to get the model further trained by twisted dataset:
+
+    ```
+    checkpoint_dir = !!PATH to best_model.pkl in the previous training!!
+    ```
+
+    The final model is in `Demo/2.NN_training/train2_result`.
+
   - For real practice training, the configuration file can be see at `Trained_models/models/momo/momo_diag_tsf.ini` and other corrsponding folders.
 
 - NN inference
 
-  - Use models in `trained_models` （or models trained by yourself), we do NN inference and the configuration file is at`` 
-  
+  - Use models in `trained_models` （or models trained by yourself), we do NN inference.
+  - The overlap
+  - and the configuration file is at`` 
+
 - postprocess
 
 # Instruction of Use
