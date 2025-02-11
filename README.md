@@ -79,7 +79,7 @@ Since pytorch may support different versions of CUDA and GPU drivers, you can go
 
 When inference the Hamiltonians using provided well-trained models here, a overlap matrix is required to compute in advance and the tutorial can be found at [mzjb/overlap-only-OpenMX](https://github.com/mzjb/overlap-only-OpenMX).
 
-Additionally, to diagonalize NN inferenced Hamiltonians, you can use code at `Code/transfer-deephe3/inference_tools/sparse_calc_pardis.jl`, then you also need **Julia** with packages `DelimitedFiles, LinearAlgebra, JSON, HDF5, ArgParse, SparseArrays, Pardiso, Arpack, LinearMaps, JLD`.
+Additionally, to diagonalize NN inferenced Hamiltonians, you can use code at `Code/tsflearn-deephe3/inference_tools/sparse_calc_pardis.jl`, then you also need **Julia** with packages `DelimitedFiles, LinearAlgebra, JSON, HDF5, ArgParse, SparseArrays, Pardiso, Arpack, LinearMaps, JLD`.
 
 
 
@@ -89,28 +89,59 @@ As a demonstration, I show the dataset generation, NN training, NN inference and
 
 Mentionly, application in our paper requires relative heay computing power, so the demo is just a simple version.
 
-First 2 steps are computationally costy and **you can directly use our trained models** and go to NN inference part.
-
 > [!NOTE]
 >
-> Following part is waiting the uploading process of the dataset and will be available **before Feb.12, 2025**
+> First 2 steps are computationally costy and **you can directly use our trained models** and go to NN inference part.
 
 - (optional) Dataset preparation
 
-  - For non-twisted dataset:
+  - For non-twisted dataset, go `Demo/1.dataset_generation/nontwist`:
+
+    The unitcel 'POSCAR'  is provided, run
+
+    ```
+    cd Demo/1.dataset_generation/nontwist
+    python gen_dataset1.py
+    ```
+
+    and the generated dataset is in the `config` folder, each item should follow:
+
+    ```
+    .
+    ├── POSCAR_crystal
+    ├── openmx_in.dat
+    └── shift.json
+    ```
+
+    where the openmx_in.dat is the required input file to do OpenMX calculation.
+
+    You can also see a distribution of interlayer space figure like :
+
+    <img src="Figures/sample_interlayer_distribution.png" style="zoom:18%;" />
+
+  - For twisted dataset, go `Demo/1.dataset_generation/twist`
+
+    Here we provide a **relaxed** $tMoTe_2$ at $13.17^\circ$ (n=3, m=2 if using the twist n,m representation), the structure is wrritten in POSCAR. Run
 
     ```
     cd Demo/1.dataset_generation/twist
+    python gen_dataset2.py
+    ```
 
-  - For twisted dataset, use relaxed POSCAR at several twist angles and apply pertubations:
+    The generated twisted dataset is in the `config` folder. The configuration are different from the non-twist case: no supercell applied, smaller step of pertubation.
+
+    For practical training , use POSCAR at several twist angles and apply pertubations.
 
 - (optional) Neural network training
 
-  - The training config file is `` for the first step
+  - go `Demo/2.NN_training`
+  - For real practice training, the configuration file can be see at `Trained_models/models/momo/momo_diag_tsf.ini` and other corrsponding folders.
 
 - NN inference
+
+  - Use models in `trained_models` （or models trained by yourself), we do NN inference and the configuration file is at`` 
+  
 - postprocess
-  - Use models in `trained_models`
 
 # Instruction of Use
 

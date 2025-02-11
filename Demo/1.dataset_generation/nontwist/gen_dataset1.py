@@ -4,6 +4,7 @@ from pymatgen.core.structure import Structure
 from string import digits, ascii_letters
 import matplotlib.pyplot as plt
 
+
 ### output openmx basis settings for specific element
 def find_basis(x, b, p):
     # x = element name (str), b = basis accuracy (int), p = basis info path (txt file)
@@ -262,7 +263,7 @@ def batch_file_output(poscar, super, shift, type, num_pert, pert, num_atom_each_
     
     #### shift the whole layer, i.e. interlayer space, sample with mu and sigma
     mu = 0 # center is the origin interlayer space
-    sigma = 0.1 # specially, beyond 2 sigma will be dropped in the sampling       
+    sigma = 0.2 # specially, beyond 2 sigma will be dropped in the sampling       
 
     layer_displace_list = []
 
@@ -288,7 +289,7 @@ def batch_file_output(poscar, super, shift, type, num_pert, pert, num_atom_each_
 
                 layer_displace_list.append(displace_interlayer)
 
-                print(f"interlayer shift: {displace_interlayer:.3f}")
+                #print(f"interlayer shift: {displace_interlayer:.3f}")
                 struct = move_layer(struct,displacement=[0,0,displace_interlayer])
                 
                 struct.to(os.path.join(folder_path, 'POSCAR_crystal'),fmt='poscar')
@@ -299,10 +300,10 @@ def batch_file_output(poscar, super, shift, type, num_pert, pert, num_atom_each_
                 with open(openmx_in_file, 'w') as f:
                     f.write(in_file)
     
-    layer_displace_list = [i + 7.2 for i in layer_displace_list] # input the origin distance
-    lower_bound = 6.7
-    upper_bound = 7.7
-    bin_width = 0.05  # Set the desired width of each bin
+    layer_displace_list = [i + 7.212 for i in layer_displace_list] # input the origin distance
+    lower_bound = 6.4
+    upper_bound = 8.0
+    bin_width = 0.1  # Set the desired width of each bin
     # Generate the bin edges using numpy.arange()
     bin_edges = np.arange(lower_bound, upper_bound + bin_width, bin_width)
     plt.hist(layer_displace_list, bins=bin_edges, edgecolor='black')
@@ -334,15 +335,14 @@ def move_layer(struct,displacement):
 
     return struct
 
+pot_path = f"{os.path.realpath('../DFT_DATA19')}"
+basis_info_path = '../DFT_DATA19/opmx_basis.txt'
 
-pot_path = '/u/nikp/soft/openmx3.9/DFT_DATA19'
-basis_info_path = '/u/nikp/soft/openmx3.9/opmx_basis.txt'
-np.random.seed(42)  # set random seed
 
 if __name__=="__main__":
     dftuval = ['Mn', 'd', '4.0']
-    magmom = [0.0]*6*9*1000
+    magmom = [0.0]*6*9*1000  # example MnBi2Te4 3x3 bilayer supercell
 
-    batch_file_output('./POSCAR', [1, 1], [1, 1], 1,
-                    36, [0.1, 0.1, 0.1], [3, 3], 1,
+    batch_file_output('POSCAR', [6, 6], [23, 23], 1,
+                    1, [0.15, 0.15, 0.15], [3, 3], 1,
                     1, True, False, dftuval, magmom, widespace = True) # use locate_vdw_layer_new
