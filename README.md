@@ -91,7 +91,7 @@ Mentionly, application in our paper requires relative heay computing power, so t
 
 > [!NOTE]
 >
-> First 2 steps are computationally costy and **you can directly use our trained models** and go to NN inference part.
+> First 2 steps are computationally costy.
 
 - (optional) Dataset preparation
 
@@ -141,39 +141,121 @@ Mentionly, application in our paper requires relative heay computing power, so t
 
   - go `Demo/2.NN_training`, after get the nontwist and twist dataset, you can put your dataset or download the provided demo dataset and put them in `Demo/2.NN_training/datasets`
 
-    ```
     provided nontwisted dataset: https://cloud.tsinghua.edu.cn/d/18747f41cfbb45acb592/
-    provided twisted dataset: 		https://cloud.tsinghua.edu.cn/d/86725fd644394235a93e/
-    ```
-
+    provided twisted dataset:  https://cloud.tsinghua.edu.cn/d/86725fd644394235a93e/
+    
+    
     Then you can use the train the model by:
-
+    
     ```
     cd Demo/2.NN_training
     python ../../Code/tsflearn-deephe3/deephe3-train.py --train1.ini
     ```
-
+    
     where `train1.ini` is the config file, you can modify `train1.ini` to decide use CUDA device or CPU to improve the efficiency. The final result will be at `Demo/2.NN_training/train1_result`.
-
+    
     after getting the model trained by nontwisted data, we use the twisted dataset to do the transfer learning. You should first modify the `train2.ini`
-
+    
     then run following command to get the model further trained by twisted dataset:
-
+    
     ```
     checkpoint_dir = !!PATH to best_model.pkl in the previous training!!
     ```
-
+    
     The final model is in `Demo/2.NN_training/train2_result`.
-
+    
   - For real practice training, the configuration file can be see at `Trained_models/models/momo/momo_diag_tsf.ini` and other corrsponding folders.
-
+  
 - NN inference
 
   - Use models in `trained_models` （or models trained by yourself), we do NN inference.
-  - The overlap
-  - and the configuration file is at`` 
+
+  - The DFT result of the example $tMoTe_2$ at $5.08^\circ$  is provided at https://cloud.tsinghua.edu.cn/d/d17f3cadecd04ecb9fe1/, download and put in `Demo/3.NN_inference` before further steps.
+
+  - For inference the configuration file is at`Demo/3.NN_inference/infer.ini`, run 
+
+    ```
+    cd Demo/3.NN_inference
+    mkdir 5.08_pred
+    python ../../Code/tsflearn-deephe3/deephe3-eval.py infer.ini
+    ```
+
+    After runing for like 1 hour, you can get the predicted Hamiltonian in `5.08_pred` folder.
 
 - postprocess
+
+  - Energy bands: 
+
+    - Starting from the extracted Hamiltonians from DFT or the predicted Hamiltonian, here we show how to get the energy band, we can get the energy band of corresponding structures through:
+
+    - First collect the predicted hamiltonians as related info files:
+  
+      ```
+      cd Demo/4.post_progress
+      cp -r ../3.NN_inference/5.08_pred ./
+      cp ../3.NN_inference/5.08/*.dat ./5.08_pred/
+      cp ../3.NN_inference/5.08/info.json ./5.08_pred/
+      ```
+
+    - use script to get the jld file and run the diagonalization (computationally costy) :
+  
+      ```
+      cp ./*py 5.08_pred/
+      cp ./sparse_calc_diag.jl 5.08_pred/
+      cd 5.08_pred
+      python get_band_diag.py
+      bash cmd_all.sh
+      ```
+  
+    - After finishing the diagonalization, you can run following code to visualize the band:
+  
+      ```
+      python plot_band_scatter_each_k.py -u -0.45 -d -0.65
+      ```
+  
+      The `-u -d` defines the upper and lower bound of the energy band window, you may modify them.
+  
+      Same process can be done to the DFT-extracted Hamiltonian, and all result files are already in `Demo/3.NN_inference/5.08`, the energy bands are like:
+  
+      <img src="Figures/band_dft_508.png" style="zoom:18%;" />
+  
+  - Energy band comparison:
+  
+    - A comparison between bands from DFT and bands from the NN prediction, The Fermi level are aligned to the top of the conduct band, you can run:
+  
+      ```
+      # run in the Demo/4.post_progress/5.08_pred
+      python ./realign_band_plot_returndata.py -n 5.08 -r 0.175 \
+      -p1 ../../3.NN_inference/5.08 \
+      -p2 ../../4.post_progress/5.08_pred \
+      -o ../../4.post_progress/5.08_pred
+      ```
+  
+    - You can see the band comparison (DFT band in rad lines and predicted one in blue) like:
+  
+      <img src="Figures/band_compare_5.08.png" style="zoom:25%;" />
+  
+  - Hamiltonian error:
+  
+    - Noting the inference results can be analyzed since both the DFT and predicted results are put into the graph file `HGraph-xx-.pkl`, run:
+  
+      ```
+      # run in the folder including test_result.h5, src/train.ini, src/dataset_info.json, src/target_blocks.json
+      echo -e '4\nmae\n'$i'\n\nn\n0' | python Code/tsflearn-deephe3/deephe3-analyze.py
+      mv analyze_result/MAE* analyze_result/$i
+      ```
+  
+      The path to `deephe3-analyze.py` may change according where to run this code.
+  
+    - Go to the `analyze_result` folder and run
+  
+      ```
+      python ../../error_heatmap.py error_info_combined.json
+      ```
+  
+      You will get the error visualization on Hamiltonian, here is the result:
+  
+      <img src="Figures/5.08_error_info_combined.png" style="zoom:25%;" />
 
 # Instruction of Use
 
