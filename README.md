@@ -1,6 +1,6 @@
 This is the github repo for using transfer learning skill to tackle the $tMoTe_2$ electronic Hamiltonians. Our method achieves an impressive accuracy and provides reliable electronic band and topological properties.
 
-The corresponding paper is ***Transfer learning electronic structure: millielectron volt accuracy for sub-million-atom moiré semiconductor*** by T.Bao et al. For now, you can find this paper at https://arxiv.org/abs/2501.12452.
+The corresponding paper is ***Transfer learning electronic structure: millielectron volt accuracy for sub-million-atom moiré semiconductor*** by T.Bao, N.Mao et al. For now, you can find this paper at https://arxiv.org/abs/2501.12452.
 
 - Overview
 - System requirements
@@ -13,7 +13,7 @@ The corresponding paper is ***Transfer learning electronic structure: millielect
 
 # Overview
 
-The systematic work flow of transfer learning is shown as following:
+The systematic workflow of our transfer learning method is shown as following:
 
 ![alt text](Figures/Fig1-schematic.png)
 
@@ -21,23 +21,23 @@ The detailed steps involves:
 
 - Prepare the general dataset including non-twisted structures:
   - Use supercell of bilayer $MoTe_2$ and do interlayer shifting and pertubation to generate various structures
-  - Do DFT calculation and extract the Hamiltonians for supervised learning;
+  - Conduct DFT calculation and extract the Hamiltonians for supervised learning;
 - Prepare the twisted dataset (computational costly), similarly:
   - Start from the relaxed $tMoTe_2$, do pertubation to generate structures for the twisted dataset
-  - Do DFT and extract Hamiltonians
-- Train NN models 
-  - First learn from the relative cheap non-twisted dataset 
+  - Conduct DFT calculation and extract Hamiltonians
+- Train Neural Network (NN) models 
+  - First let the NN learn from the relative cheap non-twisted dataset 
   - Do transfer learning on costly twisted dataset, hyperparamenters are also fine-tuned
   - Mentionlly, we use 8 **DeepH-E3** models (see https://github.com/Xiaoxun-Gong/DeepH-E3) combined to get more accurate results
 
-After inference the model on the target structures:
+After NN inference on the target structures:
 
 - (optional) Get electronic band and Chern numbers
 - (optional) Apply to ultra large systems：
   - small-angle (down to $0.88^\circ$) twisted structures 
   - Nanoribbon systems
 
-Steps mentioned above are selected from systematic tests and are **the best path known for now**. The well-trained models metioned in the paper will be available and we believe them to be the state-of-the-art models tackling $tMoTe_2$ electronic Hamiltonians.
+Steps mentioned above are selected from systematic tests and are **the best path known for now**. The well-trained models mentioned in the paper are available and we believe them to be the state-of-the-art models tackling $tMoTe_2$ electronic Hamiltonians.
 
 
 
@@ -87,7 +87,7 @@ Additionally, to diagonalize NN inferenced Hamiltonians, you can use code at `Co
 
 As a demonstration, I show the dataset generation, NN training, NN inference and postprocess here.
 
-Mentionly, application in our paper requires relative heay computing power, so the demo is just a simple version.
+Notably, the application in our paper requires significant computational power, so the demonstration is merely a simplified version.
 
 > [!NOTE]
 >
@@ -97,7 +97,7 @@ Mentionly, application in our paper requires relative heay computing power, so t
 
   - For non-twisted dataset, go `Demo/1.dataset_generation/nontwist`:
 
-    The unitcel 'POSCAR'  is provided, run
+    The unitcell 'POSCAR'  is provided, run
 
     ```
     cd Demo/1.dataset_generation/nontwist
@@ -133,30 +133,28 @@ Mentionly, application in our paper requires relative heay computing power, so t
     python gen_dataset2.py
     ```
 
-    The generated twisted dataset is in the `config` folder. The configuration are different from the non-twist case: no supercell applied, smaller step of pertubation.
+    The generated twisted dataset is located in the `config` folder. The configuration differs from the non-twisted case: no supercell is applied, and the perturbation step is smaller.
 
     For practical training , use POSCAR at several twist angles and apply pertubations.
 
 - (optional) Neural network training
 
-  - go `Demo/2.NN_training`, after get the nontwist and twist dataset, you can put your dataset or download the provided demo dataset and put them in `Demo/2.NN_training/datasets`
+  - go `Demo/2.NN_training`, after getting the nontwist and twist dataset, you can use your dataset or download the provided demo dataset and put them in `Demo/2.NN_training/datasets`
 
     provided nontwisted dataset: https://cloud.tsinghua.edu.cn/d/18747f41cfbb45acb592/
     provided twisted dataset:  https://cloud.tsinghua.edu.cn/d/86725fd644394235a93e/
     
     
-    Then you can use the train the model by:
+    Then you train the model by:
     
     ```
     cd Demo/2.NN_training
     python ../../Code/tsflearn-deephe3/deephe3-train.py --train1.ini
     ```
     
-    where `train1.ini` is the config file, you can modify `train1.ini` to decide use CUDA device or CPU to improve the efficiency. The final result will be at `Demo/2.NN_training/train1_result`.
+    where `train1.ini` is the config file, you can modify `train1.ini` to decide whether to use CUDA device or CPU to improve the efficiency. The final result will be at `Demo/2.NN_training/train1_result`.
     
-    after getting the model trained by nontwisted data, we use the twisted dataset to do the transfer learning. You should first modify the `train2.ini`
-    
-    then run following command to get the model further trained by twisted dataset:
+    after getting the model trained by nontwisted data, we use the twisted dataset to do the transfer learning. You should firstly modify the `train2.ini`, then run following command to get the model further trained by twisted dataset:
     
     ```
     checkpoint_dir = !!PATH to best_model.pkl in the previous training!!
@@ -164,13 +162,13 @@ Mentionly, application in our paper requires relative heay computing power, so t
     
     The final model is in `Demo/2.NN_training/train2_result`.
     
-  - For real practice training, the configuration file can be see at `Trained_models/models/momo/momo_diag_tsf.ini` and other corrsponding folders.
+  - For genuine practice training, the configuration file can be accessed at `Trained_models/models/momo/momo_diag_tsf.ini`, along with other corresponding folders.
   
 - NN inference
 
-  - Use models in `trained_models` （or models trained by yourself), we do NN inference.
+  - Use models in `trained_models` （or models trained by yourself), we here do NN inference.
 
-  - The DFT result of the example $tMoTe_2$ at $5.08^\circ$  is provided at https://cloud.tsinghua.edu.cn/d/d17f3cadecd04ecb9fe1/, download and put in `Demo/3.NN_inference` before further steps.
+  - The DFT result of the example $tMoTe_2$ at $5.08^\circ$  is provided at https://cloud.tsinghua.edu.cn/d/d17f3cadecd04ecb9fe1/, download and put it in `Demo/3.NN_inference` before further steps.
 
   - For inference the configuration file is at`Demo/3.NN_inference/infer.ini`, run 
 
@@ -180,7 +178,7 @@ Mentionly, application in our paper requires relative heay computing power, so t
     python ../../Code/tsflearn-deephe3/deephe3-eval.py infer.ini
     ```
 
-    After runing for like 1 hour, you can get the predicted Hamiltonian in `5.08_pred` folder.
+    After running for approximately one hour, the predicted Hamiltonian can be obtained in the `5.08_pred`folder.
 
 - postprocess
 
@@ -188,7 +186,7 @@ Mentionly, application in our paper requires relative heay computing power, so t
 
     - Starting from the extracted Hamiltonians from DFT or the predicted Hamiltonian, here we show how to get the energy band, we can get the energy band of corresponding structures through:
 
-    - First collect the predicted hamiltonians as related info files:
+    - First collect the predicted hamiltonians and related info files (info files borrowed from DFT folder in this Demo):
   
       ```
       cd Demo/4.post_progress
@@ -197,7 +195,7 @@ Mentionly, application in our paper requires relative heay computing power, so t
       cp ../3.NN_inference/5.08/info.json ./5.08_pred/
       ```
 
-    - use script to get the jld file and run the diagonalization (computationally costy) :
+    - use script to get the jld file and run the diagonalization (computationally costly) :
   
       ```
       cp ./*py 5.08_pred/
@@ -207,7 +205,7 @@ Mentionly, application in our paper requires relative heay computing power, so t
       bash cmd_all.sh
       ```
   
-    - After finishing the diagonalization, you can run following code to visualize the band:
+    - Following the diagonalization process, you can execute the following code to visualize the band structure:
   
       ```
       python plot_band_scatter_each_k.py -u -0.45 -d -0.65
@@ -221,7 +219,7 @@ Mentionly, application in our paper requires relative heay computing power, so t
   
   - Energy band comparison:
   
-    - A comparison between bands from DFT and bands from the NN prediction, The Fermi level are aligned to the top of the conduct band, you can run:
+    - A comparative analysis between bands from DFT and bands predicted by NN reveals that the Fermi level is positioned at the top of the conduct band. Consequently, the following command can be executed:
   
       ```
       # run in the Demo/4.post_progress/5.08_pred
@@ -231,13 +229,13 @@ Mentionly, application in our paper requires relative heay computing power, so t
       -o ../../4.post_progress/5.08_pred
       ```
   
-    - You can see the band comparison (DFT band in rad lines and predicted one in blue) like:
+    - You can visualize the band comparison (DFT band in red and predicted one in blue) as follows:
   
       <img src="Figures/band_compare_5.08.png" style="zoom:25%;" />
   
   - Hamiltonian error:
   
-    - Noting the inference results can be analyzed since both the DFT and predicted results are put into the graph file `HGraph-xx-.pkl`, run:
+    - It is possible to analyze the inference results since both the DFT and predicted results are stored in the graph file `HGraph-xx-.pkl`. To do this, run the following command:
   
       ```
       # run in the folder including test_result.h5, src/train.ini, src/dataset_info.json, src/target_blocks.json
@@ -259,7 +257,7 @@ Mentionly, application in our paper requires relative heay computing power, so t
 
 # Instruction of Use
 
-Refer to Demo part. If you are interested in $tMoTe_2$ specifically, we strongly sugguest you to use our well-trained models at `trained_models` folder. And for other twisted materials, this methodology should also work well.
+Please refer to the Demo section. If you are specifically interested in $tMoTe_2$, we strongly recommend using our well-trained models located in the trained_models folder. This methodology should also be applicable to other twisted materials.
 
 
 
